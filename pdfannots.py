@@ -373,7 +373,7 @@ def get_outlines(doc, pagesdict):
     result = []
     for (_, title, destname, actionref, _) in doc.get_outlines():
         if destname is None and actionref:
-            action = actionref.resolve()
+            action = pdftypes.resolve1(actionref)
             if isinstance(action, dict):
                 subtype = action.get('S')
                 if subtype is PSLiteralTable.intern('GoTo'):
@@ -383,7 +383,7 @@ def get_outlines(doc, pagesdict):
         dest = resolve_dest(doc, destname)
         # consider targets of the form [page /XYZ left top zoom]
         if dest[1] is PSLiteralTable.intern('XYZ'):
-            (pageref, _, targetx, targety, _) = dest
+            (pageref, _, targetx, targety) = dest[:4]
             page = pagesdict[pageref.objid]
             pos = Pos(page, targetx, targety)
             result.append(Outline(title, destname, pos))
